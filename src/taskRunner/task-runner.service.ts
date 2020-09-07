@@ -5,6 +5,7 @@ import {TeacherUserModel} from '../core/models/users/teacher-user.model';
 import {mailingService} from '../mailing/mailing.service';
 import {SheetStatusEnum} from '../core/enums/sheetStatus.enum';
 import {SheetModel} from '../core/models/sheet.model';
+import QuerySnapshot = FirebaseFirestore.QuerySnapshot;
 
 const eventDailyMailTemplateId = 'd-0ea3988469fa49dca5e20776eb7fef62';
 const transcriptReminderTemplateId = 'd-1005f7689d674ae99bb42f49b38ec90a';
@@ -26,18 +27,20 @@ export const taskRunnerService = {
             });
     },
     processTomorrowEvent(event: EventModel) {
-        return admin.firestore().collection('users').doc(event.recorder).get()
-            .then((userSnapshot: DocumentSnapshot) => {
-                const user = userSnapshot.data() as TeacherUserModel;
-                const eventDate = new Date(event.startDate);
-                const messageData = {
-                    course: event.course,
-                    university: event.university,
-                    localisation: event.location,
-                    buttonUrl: 'https://fiches.diploma-sante.fr/record/' + event.id,
-                    time: eventDate.getUTCHours() + 'h' + eventDate.getMinutes()
-                };
-                return mailingService.sendMail(eventDailyMailTemplateId, [user.email], messageData);
+        return admin.firestore().collection('users').where('uid', 'in', event.recorder).get()
+            .then((userSnapshots: QuerySnapshot) => {
+                userSnapshots.forEach((userSnapshot: DocumentSnapshot) => {
+                    const user = userSnapshot.data() as TeacherUserModel;
+                    const eventDate = new Date(event.startDate);
+                    const messageData = {
+                        course: event.course,
+                        university: event.university,
+                        localisation: event.location,
+                        buttonUrl: 'https://fiches.diploma-sante.fr/record/' + event.id,
+                        time: eventDate.getUTCHours() + 'h' + eventDate.getMinutes()
+                    };
+                    return mailingService.sendMail(eventDailyMailTemplateId, [user.email], messageData);
+                });
             })
             .catch((error: Error) => {
                 console.error(error.name);
@@ -59,17 +62,19 @@ export const taskRunnerService = {
                 );
             });
     },
-    processReminderMail(userId: string, mailId: string, sheet: SheetModel) {
-        return admin.firestore().collection('users').doc(userId).get()
-            .then((userSnapshot: DocumentSnapshot) => {
-                const user = userSnapshot.data() as TeacherUserModel;
-                const messageData = {
-                    course: sheet.course,
-                    university: sheet.university,
-                    chapter: sheet.chapter,
-                    buttonUrl: 'https://fiches.diploma-sante.fr/sheet/' + sheet.id,
-                };
-                return mailingService.sendMail(eventDailyMailTemplateId, [user.email], messageData);
+    processReminderMail(userIds: string[], mailId: string, sheet: SheetModel) {
+        return admin.firestore().collection('users').where('uid', 'in', userIds).get()
+            .then((userSnapshots: QuerySnapshot) => {
+                userSnapshots.forEach((userSnapshot: DocumentSnapshot) => {
+                    const user = userSnapshot.data() as TeacherUserModel;
+                    const messageData = {
+                        course: sheet.course,
+                        university: sheet.university,
+                        chapter: sheet.chapter,
+                        buttonUrl: 'https://fiches.diploma-sante.fr/sheet/' + sheet.id,
+                    };
+                    return mailingService.sendMail(eventDailyMailTemplateId, [user.email], messageData);
+                });
             })
             .catch((error: Error) => {
                 console.error(error.name);
@@ -77,7 +82,7 @@ export const taskRunnerService = {
             });
     },
     processHourlyTasks() {
-        return taskRunnerService.getTranscriptsToRemind()
+        return taskRunnerService.getTranscriptsToRemind();
     }
 };
 

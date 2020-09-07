@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import {DocumentSnapshot, QueryDocumentSnapshot} from 'firebase-functions/lib/providers/firestore';
+import {DocumentSnapshot} from 'firebase-functions/lib/providers/firestore';
 import {TeacherUserModel} from '../core/models/users/teacher-user.model';
 import {mailingService} from '../mailing/mailing.service';
 import {SheetModel} from '../core/models/sheet.model';
