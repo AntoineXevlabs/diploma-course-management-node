@@ -5,7 +5,7 @@ import {pwdGenerator} from '../core/constants/pwd-generator.constant';
 
 
 const admin = require('firebase-admin');
-const mailRegistrationId = 'd-8dbc74052d584a0fb8f8bca574ced2fb'
+const mailRegistrationId = 'd-2ff69280406c45ef98180ea26e4e5405'
 
 export const onUserCreated = (snapshot: FirebaseFirestore.DocumentSnapshot, context: any) => {
     const user = snapshot.data() as TeacherUserModel;
@@ -14,6 +14,7 @@ export const onUserCreated = (snapshot: FirebaseFirestore.DocumentSnapshot, cont
         email: user.email,
         password: pwdGenerator(),
         displayName: user.firstName + ' ' + user.lastName,
+        buttonUrl: "https://fiches.diploma-sante.fr"
     }
     return admin.auth().createUser(firebaseUser).then((userRecord: UserRecord) => {
         return mailingService.sendMail(mailRegistrationId, [firebaseUser.email], {user: firebaseUser})

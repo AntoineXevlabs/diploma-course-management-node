@@ -1,5 +1,6 @@
 import { EventStatusEnum } from '../enums/eventStatus.enum';
 import { UniversityEnum } from '../enums/university.enum';
+import {FileModel} from './file.model';
 
 export interface EventModel extends EventFormModel {
     id: string;
@@ -15,10 +16,11 @@ export interface EventFormModel {
     location: string;
     startDate: number;
     endDate: number;
-    recorder: string; // uid of the recoder
-    transcripter: string;
-    teacher: string;
-    sheetMaker: string;
+    relatedFiles: FileModel[];
+    recorder: string[]; // uid of the recoder
+    transcripter: string[];
+    teacher: string[];
+    sheetMaker: string[];
     previousYearSheet: string; // storage of the previous year sheet
     onlineCourse: boolean;
     courseLink: string;
