@@ -7,8 +7,8 @@ import {SheetStatusEnum} from '../core/enums/sheetStatus.enum';
 import {SheetModel} from '../core/models/sheet.model';
 import QuerySnapshot = FirebaseFirestore.QuerySnapshot;
 
-const eventDailyMailTemplateId = 'd-0ea3988469fa49dca5e20776eb7fef62';
-const transcriptReminderTemplateId = 'd-1005f7689d674ae99bb42f49b38ec90a';
+const eventDailyMailTemplateId = 'event_reminder_email';
+const transcriptReminderTemplateId = 'transcript_reminder_email';
 
 export const taskRunnerService = {
     processEventsForTomorrow(): Promise<void> {

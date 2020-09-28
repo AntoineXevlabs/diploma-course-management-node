@@ -6,7 +6,7 @@ import {DateParser} from '../core/constants/date-parser.constant';
 import {mailingService} from '../mailing/mailing.service';
 import QuerySnapshot = FirebaseFirestore.QuerySnapshot;
 
-const eventCreationMailTemplateId = 'd-bb365096f16e4577b2547d85587e0cdd';
+const eventCreationMailTemplateId = 'event_creation_email';
 
 export const eventService: { eventCreated: (event: EventModel) => any } = {
     eventCreated(event: EventModel) {

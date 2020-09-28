@@ -8,10 +8,10 @@ import {of} from 'rxjs';
 import {SheetStatusEnum} from '../core/enums/sheetStatus.enum';
 import QuerySnapshot = FirebaseFirestore.QuerySnapshot;
 
-const transcriptCreationMailTemplateId = 'd-e33a5662d23849a5a26248d468c4b5e8';
-const newSheetRedactionMailTemplateId = 'd-779d6849e9be4d0eb9a1aa261b2350e3';
-const newMapMailTemplateId = 'd-894432e776e544fa87d7ffe2aa1da1fe';
-const newSheetToValidateTemplateId = 'd-0718eabd6d254f8297992941c5b0819a';
+const transcriptCreationMailTemplateId = 'transcription_creation_email';
+const newSheetRedactionMailTemplateId = 'sheet_creation_email';
+const newMapMailTemplateId = 'map_creation_email';
+const newSheetToValidateTemplateId = 'validation_creation_email';
 
 const sendSheetNotificationMail = (mailId: string, userIds: string[], sheet:SheetModel) => {
     return admin.firestore().collection('users').where('uid', 'in', userIds).get()
@@ -48,8 +48,6 @@ export const sheetService = {
         return of();
     },
     processSheetUpdated(oldSheet: SheetModel, newSheet: SheetModel) {
-        console.log(JSON.stringify(oldSheet))
-        console.log(JSON.stringify(newSheet))
         if (oldSheet.status !== SheetStatusEnum.TRANSCRIPTED && newSheet.status === SheetStatusEnum.TRANSCRIPTED) {
            return sendSheetNotificationMail(newMapMailTemplateId, newSheet.teacher, newSheet)
         } else if (oldSheet.status !== SheetStatusEnum.MAPPED && newSheet.status === SheetStatusEnum.MAPPED) {
