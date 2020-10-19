@@ -22,7 +22,7 @@ function readLocalTemplate(template: string): Promise<string> {
             var filename = require.resolve(`${templateLocations}/${template}`);
             // @ts-ignore
             fs.readFile(filename, 'utf8', (err, res) => {
-                return resolve(res);
+                resolve(res);
             });
         } catch (e) {
             reject(e);

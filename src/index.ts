@@ -6,7 +6,6 @@ import {dailyTasks} from './taskRunner/daily.tasks';
 import {onSheetCreated} from './sheets/sheet-creation';
 import {onSheetUpdated} from './sheets/sheet-update';
 import {hourlyTaks} from './taskRunner/hourly.tasks';
-import {mailTester} from './mailing/mailing.service';
 
 const admin = require('firebase-admin');
 admin.initializeApp();
@@ -23,6 +22,5 @@ export const dailyTaskRunner = functions.runWith( { memory: '2GB' })
     .pubsub.schedule('0 19 * * *').timeZone('Europe/Paris').onRun(dailyTasks);
 
 export const hourlyTaskRunner = functions.runWith( { memory: '2GB' })
-    .pubsub.schedule('every hour').timeZone('Europe/Paris').onRun(hourlyTaks);
+    .pubsub.schedule('0 * * * *').timeZone('Europe/Paris').onRun(hourlyTaks);
 
-export const testMail = functions.https.onRequest(mailTester);
