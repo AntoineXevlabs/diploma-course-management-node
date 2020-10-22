@@ -7,6 +7,7 @@ import {SheetCircuitEnum} from '../core/enums/sheetCircuit.enum';
 import {of} from 'rxjs';
 import {SheetStatusEnum} from '../core/enums/sheetStatus.enum';
 import QuerySnapshot = FirebaseFirestore.QuerySnapshot;
+import {EventModel} from '../core/models/event.model';
 
 const transcriptCreationMailTemplateId = 'transcription_creation_email';
 const newSheetRedactionMailTemplateId = 'sheet_creation_email';
@@ -56,5 +57,25 @@ export const sheetService = {
             return sendSheetNotificationMail(newSheetToValidateTemplateId, newSheet.teacher, newSheet)
         }
         return of();
+    },
+    updateSheetsFromEvent(event: EventModel) {
+        admin.firestore().collection('sheets').where('relatedEventsIds', 'in', event.id).get()
+            .then((sheetsSnapshot: QuerySnapshot) => {
+                return sheetsSnapshot.forEach((sheetSnapshot: DocumentSnapshot) => {
+                    admin.firestore().collection('sheets').doc(sheetSnapshot.id).update({
+                    course: event.course,
+                    chapter: event.chapter,
+                    university: event.university,
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    relatedFiles: event.relatedFiles,
+                    recorder: event.recorder,
+                    transcripter: event.transcripter,
+                    teacher: event.teacher,
+                    sheetMaker: event.sheetMaker,
+                    onlineCourse: event.onlineCourse,
+                    courseLink: event.courseLink})
+                })
+            }).catch((error) => console.log(error))
     }
 };

@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions';
 import {onUserCreated} from './users/user-creation';
 import {onUserDeleted} from './users/user-deletion';
 import {onEventCreated} from './event/event-creation';
+import {onEventUpdated} from './event/event-update';
 import {dailyTasks} from './taskRunner/daily.tasks';
 import {onSheetCreated} from './sheets/sheet-creation';
 import {onSheetUpdated} from './sheets/sheet-update';
@@ -14,6 +15,7 @@ export const onUserCreatedTrigger = functions.firestore.document('users/{user}')
 export const onUserDeletedTrigger = functions.firestore.document('users/{user}').onDelete(onUserDeleted);
 
 export const onEventCreatedTrigger = functions.firestore.document('events/{eventId}').onCreate(onEventCreated);
+export const onEventUpdatedTrigger = functions.firestore.document('events/{eventId}').onUpdate(onEventUpdated);
 
 export const onSheetCreatedTrigger = functions.firestore.document('sheets/{sheetId}').onCreate(onSheetCreated);
 export const onSheetUpdatedTrigger = functions.firestore.document('sheets/{sheetId}').onUpdate(onSheetUpdated);
