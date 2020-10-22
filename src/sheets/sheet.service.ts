@@ -59,7 +59,7 @@ export const sheetService = {
         return of();
     },
     updateSheetsFromEvent(event: EventModel) {
-        admin.firestore().collection('sheets').where('relatedEventsIds', 'in', event.id).get()
+        admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
             .then((sheetsSnapshot: QuerySnapshot) => {
                 return sheetsSnapshot.forEach((sheetSnapshot: DocumentSnapshot) => {
                     admin.firestore().collection('sheets').doc(sheetSnapshot.id).update({
