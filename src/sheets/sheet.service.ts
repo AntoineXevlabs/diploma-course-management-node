@@ -60,22 +60,24 @@ export const sheetService = {
     },
     updateSheetsFromEvent(event: EventModel) {
         admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
-            .then((sheetsSnapshot: QuerySnapshot) => {
-                return sheetsSnapshot.forEach((sheetSnapshot: DocumentSnapshot) => {
+            .then((sheetsSnapshots: QuerySnapshot) => {
+                const promises = sheetsSnapshots.docs.map((sheetSnapshot: DocumentSnapshot) => {
                     admin.firestore().collection('sheets').doc(sheetSnapshot.id).update({
-                    course: event.course,
-                    chapter: event.chapter,
-                    university: event.university,
-                    startDate: event.startDate,
-                    endDate: event.endDate,
-                    relatedFiles: event.relatedFiles,
-                    recorder: event.recorder,
-                    transcripter: event.transcripter,
-                    teacher: event.teacher,
-                    sheetMaker: event.sheetMaker,
-                    onlineCourse: event.onlineCourse,
-                    courseLink: event.courseLink})
-                })
-            }).catch((error) => console.log(error))
+                        course: event.course,
+                        chapter: event.chapter,
+                        university: event.university,
+                        startDate: event.startDate,
+                        endDate: event.endDate,
+                        relatedFiles: event.relatedFiles,
+                        recorder: event.recorder,
+                        transcripter: event.transcripter,
+                        teacher: event.teacher,
+                        sheetMaker: event.sheetMaker,
+                        onlineCourse: event.onlineCourse,
+                        courseLink: event.courseLink})
+                });
+                return Promise.all(promises);
+            })
+            .catch((error) => console.log(error))
     }
 };
