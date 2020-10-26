@@ -13,6 +13,8 @@ export interface SheetModel {
     university: UniversityEnum;
     finished: boolean;
     relatedEventsIds: string[];
+    eventStartDate: number,
+    eventEndDate: number,
     circuit: SheetCircuitEnum;
     status: SheetStatusEnum;
     relatedFiles: FileModel[];

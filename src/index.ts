@@ -6,6 +6,7 @@ import {dailyTasks} from './taskRunner/daily.tasks';
 import {onSheetCreated} from './sheets/sheet-creation';
 import {onSheetUpdated} from './sheets/sheet-update';
 import {hourlyTaks} from './taskRunner/hourly.tasks';
+import {addEventStartAndEndDates} from './sheets/sheet.service';
 
 const admin = require('firebase-admin');
 admin.initializeApp();
@@ -24,3 +25,4 @@ export const dailyTaskRunner = functions.runWith( { memory: '2GB' })
 export const hourlyTaskRunner = functions.runWith( { memory: '2GB' })
     .pubsub.schedule('0 * * * *').timeZone('Europe/Paris').onRun(hourlyTaks);
 
+export const addSheetEventStartAndEndDates = functions.https.onRequest(addEventStartAndEndDates);
