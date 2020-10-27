@@ -67,7 +67,7 @@ export const sheetService = {
         admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
             .then((sheetsSnapshots: QuerySnapshot) => {
                 const promises = sheetsSnapshots.docs.map((sheetSnapshot: DocumentSnapshot) => {
-                    admin.firestore().collection('sheets').doc(sheetSnapshot.id).update({
+                    sheetSnapshot.ref.update({
                         course: event.course,
                         chapter: event.chapter,
                         university: event.university,
