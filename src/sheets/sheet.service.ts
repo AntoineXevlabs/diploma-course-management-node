@@ -62,6 +62,28 @@ export const sheetService = {
             return sendSheetNotificationMail(newSheetToValidateTemplateId, newSheet.teacher, newSheet)
         }
         return of();
+    },
+    updateSheetsFromEvent(event: EventModel) {
+        admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
+            .then((sheetsSnapshots: QuerySnapshot) => {
+                const promises = sheetsSnapshots.docs.map((sheetSnapshot: DocumentSnapshot) => {
+                    sheetSnapshot.ref.update({
+                        course: event.course,
+                        chapter: event.chapter,
+                        university: event.university,
+                        startDate: event.startDate,
+                        endDate: event.endDate,
+                        relatedFiles: event.relatedFiles,
+                        recorder: event.recorder,
+                        transcripter: event.transcripter,
+                        teacher: event.teacher,
+                        sheetMaker: event.sheetMaker,
+                        onlineCourse: event.onlineCourse,
+                        courseLink: event.courseLink})
+                });
+                return Promise.all(promises);
+            })
+            .catch((error) => console.log(error))
     }
 };
 
