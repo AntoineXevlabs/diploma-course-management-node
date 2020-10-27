@@ -10,6 +10,7 @@ export const onEventUpdated = (snapshot: Change<QueryDocumentSnapshot>, context:
     if (_.isEqual(_.omit(oldEvent, ['id', 'createdAt', 'updatedAt', 'createdBy', 'location', 'previousYearSheet', 'status']),
         _.omit(newEvent, ['id', 'createdAt', 'updatedAt', 'createdBy', 'location', 'previousYearSheet', 'status']))
     ) {
-        sheetService.updateSheetsFromEvent(newEvent);
+        return sheetService.updateSheetsFromEvent(newEvent);
     }
+    return Promise.resolve()
 }
