@@ -37,7 +37,7 @@ const sendSheetNotificationMail = (mailId: string, userIds: string[], sheet:Shee
             console.error(error.name);
             console.error(error.message);
         });
-}
+};
 
 
 export const sheetService = {
@@ -45,7 +45,7 @@ export const sheetService = {
         if (sheet.finished) {
             switch (sheet.circuit) {
                 case SheetCircuitEnum.LONG:
-                    return sendSheetNotificationMail(transcriptCreationMailTemplateId, sheet.transcripter, sheet)
+                    return sendSheetNotificationMail(transcriptCreationMailTemplateId, sheet.transcripter, sheet);
                 case SheetCircuitEnum.SHORT:
                     return sendSheetNotificationMail(newSheetRedactionMailTemplateId, sheet.sheetMaker, sheet)
             }
@@ -64,10 +64,9 @@ export const sheetService = {
         return of();
     },
     updateSheetsFromEvent(event: EventModel) {
-        admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
+        return admin.firestore().collection('sheets').where('relatedEventsIds', 'array-contains', event.id).get()
             .then((sheetsSnapshots: QuerySnapshot) => {
-                const promises = sheetsSnapshots.docs.map((sheetSnapshot: DocumentSnapshot) => {
-                    sheetSnapshot.ref.update({
+                const promises = sheetsSnapshots.docs.map((sheetSnapshot: DocumentSnapshot) => sheetSnapshot.ref.update({
                         course: event.course,
                         chapter: event.chapter,
                         university: event.university,
@@ -80,7 +79,7 @@ export const sheetService = {
                         sheetMaker: event.sheetMaker,
                         onlineCourse: event.onlineCourse,
                         courseLink: event.courseLink})
-                });
+                );
                 return Promise.all(promises);
             })
             .catch((error) => console.log(error))
@@ -103,7 +102,7 @@ export const addEventStartAndEndDates = (req: Request, res: express.Response): P
                             } else {
                                 return Promise.resolve(null);
                             }
-                        })
+                        });
                     return Promise.all(promises);
                 })
                 .then((eventsSnapShots: (QuerySnapshot | null)[]) => {
@@ -117,11 +116,11 @@ export const addEventStartAndEndDates = (req: Request, res: express.Response): P
                         } else {
                             return Promise.resolve(null);
                         }
-                    })
+                    });
                     return Promise.all(promises)
                 })
                 .then(_ => res.status(200).send({results: 'OK'}))
                 .catch((error) => {res.status(503).send({error: JSON.stringify(error)})});
     });
-}
+};
 
